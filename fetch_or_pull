@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# All options or sub-commands passed will be discarded.
+# Doesn't take any inputs from cli with arguments or options.
+
+
+# Defining the fetch_or_pull function to implement git pull and fetch.
+fetch_or_pull() {
+    local response=""
+
+    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        :
+    else
+        exit 1
+    fi
+
+    echo -ne "You entered into a git repository.\nDo you want to (P)ull or (F)etch from the remote?:"
+    read -r -n 1 -p "$prompt (p/f/n): " response
+    echo # Move to the next line
+
+    case "$response" in
+        [pP])
+            echo "Pulling changes..."
+            git pull
+            ;;
+        [fF])
+            echo "Fetching changes..."
+            git fetch
+            ;;
+        [nN])
+            echo "No action taken."
+            ;;
+        *)
+            echo "Invalid option. No action taken."
+            ;;
+    esac
+}
+
+fetch_or_pull       # calling the function
+
