@@ -14,8 +14,8 @@ fetch_or_pull() {
         exit 1
     fi
 
-    echo -ne "You entered into a git repository.\nDo you want to (P)ull or (F)etch from the remote?:"
-    read -r -n 1 -p "$prompt (p/f/n): " response
+    echo -ne "You entered into a git repository.\nDo you want to (P)ull or (F)etch from the remote?: (p/f/n): "
+    read -r -n 1 response
     echo # Move to the next line
 
     case "$response" in
