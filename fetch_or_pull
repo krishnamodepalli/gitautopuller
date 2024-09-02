@@ -10,7 +10,7 @@ fetch_or_pull() {
     local RECORDS_FILE="$LOCAL_DIR/records"
     local response=""
 
-    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    if [ -d ".git" ] && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         # Now that this is surely a git repository, we will check the last time we opened this project.
         # If it is less than 20 mins, we will exit.
 
@@ -55,7 +55,7 @@ fetch_or_pull() {
         exit 1
     fi
 
-    echo -ne "You entered into a git repository.\nDo you want to (P)ull or (F)etch from the remote?: (p/f/n): "
+    echo -n "You entered into a git repository. Do you want to (P)ull or (F)etch from the remote?: (p/f/n): "
     read -r -n 1 response
     echo # Move to the next line
 
