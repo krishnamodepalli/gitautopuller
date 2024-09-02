@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/krishnamodepalli/gitautopuller/compare/v1.1.0...v1.1.1) (2024-09-02)
+
+
+### Bug Fixes
+
+* resolve issue with recognising child folder as individual git repo ([3174a29](https://github.com/krishnamodepalli/gitautopuller/commit/3174a29d56933fb2f262879ae40d607c07ece3a6))
+
 ## [1.1.0](https://github.com/krishnamodepalli/gitautopuller/compare/v1.0.1...v1.1.0) (2024-09-02)
 
 
