@@ -3,20 +3,52 @@
 # All options or sub-commands passed will be discarded.
 # Doesn't take any inputs from cli with arguments or options.
 
+# This function prompts the user for input, weather to pull/fetch/do-nothing.
+ask() {
+    local response=""
+
+    echo -n "You entered into a git repository. Do you want to (P)ull or (F)etch from the remote?: (p/f/n): "
+    read -r -n 1 response
+    echo # Move to the next line
+
+    case "$response" in
+        [pP])
+            echo "Pulling changes..."
+            git pull
+            ;;
+        [fF])
+            echo "Fetching changes..."
+            git fetch
+            ;;
+        [nN])
+            echo "No action taken."
+            ;;
+        *)
+            echo "Invalid option. No action taken."
+            return 19
+            ;;
+    esac
+    return 0
+}
 
 # Defining the fetch_or_pull function to implement git pull and fetch.
 fetch_or_pull() {
     local LOCAL_DIR="$HOME/.local/share/gitautopuller"
     local RECORDS_FILE="$LOCAL_DIR/records"
-    local response=""
 
     if [ -d ".git" ] && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         # Now that this is surely a git repository, we will check the last time we opened this project.
         # If it is less than 20 mins, we will exit.
 
+        # here we will prompt the user for input
+        ask
+        local res=$?
+        if [ "$res" -eq "19" ]; then
+            exit 19;
+        fi
+
         # check if the local directory exists
         if [[ ! -d "$LOCAL_DIR" ]]; then
-            echo "hi"
             # if it doesn't exists then, create the folder
             mkdir "$LOCAL_DIR"
             # then create the records file
@@ -38,8 +70,9 @@ fetch_or_pull() {
             local timestamp=$(date -d "$time" +%s)
             local curr_timestamp=$(date +%s)
 
+            # time difference from last timestamp to current time
             local diff=$((curr_timestamp - timestamp))
-            local twenty_mins=1200
+            local twenty_mins=1200      # 20 mins = 20 * (60 seconds) = 1200 seconds
 
             if [[ "$diff" -gt "$twenty_mins" ]]; then
                 # updating the file
@@ -54,27 +87,6 @@ fetch_or_pull() {
     else
         exit 1
     fi
-
-    echo -n "You entered into a git repository. Do you want to (P)ull or (F)etch from the remote?: (p/f/n): "
-    read -r -n 1 response
-    echo # Move to the next line
-
-    case "$response" in
-        [pP])
-            echo "Pulling changes..."
-            git pull
-            ;;
-        [fF])
-            echo "Fetching changes..."
-            git fetch
-            ;;
-        [nN])
-            echo "No action taken."
-            ;;
-        *)
-            echo "Invalid option. No action taken."
-            ;;
-    esac
 }
 
 fetch_or_pull       # calling the function
