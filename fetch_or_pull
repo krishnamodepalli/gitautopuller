@@ -40,13 +40,6 @@ fetch_or_pull() {
         # Now that this is surely a git repository, we will check the last time we opened this project.
         # If it is less than 20 mins, we will exit.
 
-        # here we will prompt the user for input
-        ask
-        local res=$?
-        if [ "$res" -eq "19" ]; then
-            exit 19;
-        fi
-
         # check if the local directory exists
         if [[ ! -d "$LOCAL_DIR" ]]; then
             # if it doesn't exists then, create the folder
@@ -64,8 +57,7 @@ fetch_or_pull() {
 
         local curr_time=$(date +"%Y-%m-%d %H:%M:%S")
         if [[ "$resp" ]]; then
-            # if found
-            # check the time
+            # if repo is found in the RECORDS file...
             local time=$(echo "$resp" | awk '{print $2, $3}')
             local timestamp=$(date -d "$time" +%s)
             local curr_timestamp=$(date +%s)
@@ -74,7 +66,14 @@ fetch_or_pull() {
             local diff=$((curr_timestamp - timestamp))
             local twenty_mins=1200      # 20 mins = 20 * (60 seconds) = 1200 seconds
 
-            if [[ "$diff" -gt "$twenty_mins" ]]; then
+            # check the time
+            if [[ "$diff" -gt "$twenty_mins" ]]; then       # if the time-gap is more than 20 mins.
+                # here we will prompt the user for input
+                ask
+                local res=$?
+                if [ "$res" -eq "19" ]; then        # if `invalid` option provided,
+                    exit 19;                        # do not add repo to the RECORDS file. Exit directly
+                fi
                 # updating the file
                 sed -i "\/^$repo_name /s/ [0-9-]* [0-9:]*$/ $curr_time/" "$RECORDS_FILE"
             else
@@ -82,6 +81,12 @@ fetch_or_pull() {
                 exit 11
             fi
         else
+            # if repo name is not found in the RECORDS file...
+            ask
+            local res=$?
+            if [ "$res" -eq "19" ]; then        # if `invalid` option provided,
+                exit 19;                        # do not add repo to the RECORDS file. Exit directly
+            fi
             echo "$repo_name $curr_time" >> "$RECORDS_FILE"
         fi
     else
