@@ -28,6 +28,8 @@ uninstall:
 	@echo -n "Uninstalling $(NAME)... "
 	@sudo rm /usr/local/bin/fetch_or_pull
 	@echo "✔️ "
+	@echo
+	@echo "You may have to clear the scripts from your shell config files '.bashrc or .zshrc or config.fish'."
 
 
 

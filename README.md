@@ -32,6 +32,21 @@ chpwd() {
 }
 ```
 
+#### `fish`
+Unfortunately `fish` do not support this feature of runnning a command on each
+directory changes. But we can take advantage of the `cd` command and alias it
+with a new function just like below.
+```fish
+function cd
+    # call the original `cd` command
+    command cd $argv
+
+    # running our script down here
+    fetch_or_pull
+    # you can also run any other scripts down here
+end
+```
+
 ## Uninstall
 
 As simple as install
